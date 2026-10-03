@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kiosk Countdown</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      background-color: #000000;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      user-select: none;
+    }
+    .countdown-display {
+      color: #FF2A2A;
+      font-weight: bold;
+      font-size: 15vw;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      text-align: center;
+      white-space: nowrap;
+      padding: 0 15vw;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-shadow: 0 0 22px #ff0000;
+    }
+  </style>
+</head>
+<body>
+  <div class="countdown-display" id="timer">00:00:00</div>
+  <script>
+    // 香港時間：2027-01-03 夜晚7點 GMT+8
+    const TARGET_DATE_STRING = "2027-01-03T19:00:00+08:00";
+    const targetDate = new Date(TARGET_DATE_STRING).getTime();
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+      if (distance <= 0) {
+        document.getElementById("timer").innerText = "00:00:00";
+        return;
+      }
+      const totalHours = Math.floor(distance / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      const hStr = String(totalHours);
+      const mStr = String(minutes).padStart(2, '0');
+      const sStr = String(seconds).padStart(2, '0');
+      document.getElementById("timer").innerText = `${hStr}:${mStr}:${sStr}`;
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+    document.addEventListener("dblclick", toggleFullScreen);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === 'f' || e.key === 'F') toggleFullScreen();
+    });
+  </script>
+</body>
+</html>
